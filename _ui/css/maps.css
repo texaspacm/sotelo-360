@@ -1,0 +1,20 @@
+
+/* 3.3 Maps
+------------------------------------------------------------------------------*/
+
+.map-form {
+	padding: 30px 20px;
+}
+
+.map-form h5,
+.map-form .inline .checkable:first-child {
+	margin-left: 30px;
+}
+
+.map-form label {
+	color: #1f1f1f;
+}
+
+.map-form .inline {
+	margin-top: 21px;
+}

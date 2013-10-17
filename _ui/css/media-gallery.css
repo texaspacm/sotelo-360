@@ -1,0 +1,213 @@
+
+/* 3.1 Media Gallery
+------------------------------------------------------------------------------*/
+
+.content-nav-pane .thumbs {
+	margin: 0 0 0 30px;
+}
+
+.content-nav-pane .thumb-rollover-inner {
+	margin: 5px;
+	background: #9ACB57;
+	-moz-box-shadow: 0 0 5px #9ACB57;
+	-webkit-box-shadow: 0 0 5px #9ACB57;
+	box-shadow: 0 0 5px #9ACB57;
+}
+
+.content-nav-pane .thumb-holder,
+.content-nav-pane .thumb-holder > div {
+	padding: 5px 0;
+}
+
+.content-nav-pane .thumb {
+	position: relative;
+}
+
+.content-nav-pane .thumb img {
+	padding: 5px;
+	border: 1px solid #dddddd;
+	background: #fff;
+}
+
+.content-nav-pane .thumb .play-icon,
+#componentWrapper .video_holder {
+	position: absolute;
+	top: 6px;
+	right: 6px;
+	bottom: 6px;
+	left: 6px;
+	background: rgba(0,0,0,0.1) url(../images/media-gallery/play_off.png) center center no-repeat;
+	cursor: pointer;
+}
+
+.content-nav-pane .thumb .play-icon:hover {
+	background-image: url(../images/media-gallery/play_on.png);
+}
+
+#prevThumbBtn,
+#nextThumbBtn {
+	margin-top: 7.5px;
+}
+
+#componentWrapper .video_holder {
+	display: none;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 2;
+	overflow: hidden;
+	background-image: url(../images/media-gallery/play_vid_off.png);
+}
+
+#componentWrapper .video_holder:hover {
+	background-image: url(../images/media-gallery/play_vid_on.png);
+}
+
+#componentWrapper .video_holder_inner {
+	position: absolute;
+	bottom: 100%;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	background: #000;
+}
+
+/* component holder */
+#componentWrapper{
+	position:absolute;
+	top:0px;	
+	left:0px;
+	width:100%;
+	height:100%;
+	overflow: hidden;
+	background:#fff;
+}
+
+/* playlist holder (hidden) */
+#componentWrapper .componentPlaylist{
+	display:none;
+}
+
+/* slideshow controls */
+#componentWrapper .slideshow_controls{
+	position:absolute;
+	width:100px;
+	height:30px;
+	top:10px;
+	left:-50px;
+	margin-left:50%;
+	display:none;
+}
+
+#componentWrapper .controls_prev, .controls_toggle, .controls_next{
+	position:absolute;
+	width:30px;
+	height:30px;
+	top:0px;
+}
+
+#componentWrapper .controls_prev{
+	left:0px;
+}
+
+#componentWrapper .controls_toggle{
+	left:33px;
+}
+
+#componentWrapper .controls_next{
+	left:66px;
+}
+
+/* data_controls */
+#componentWrapper .data_controls{
+	position:absolute;
+	width:70px;
+	height:30px;
+	top:10px;
+	right:10px;
+}
+
+/* link */
+#componentWrapper .link_toggle{
+	position:relative;
+	width:30px;
+	height:30px;
+	top:0px;
+	right:0px;
+	float:right;
+	display:none;
+}
+
+/* description */
+#componentWrapper .info_toggle{
+	position:relative;
+	width:30px;
+	height:30px;
+	top:0px;
+	right:0px;
+	float:right;
+	margin-left:10px;
+	display:none;
+}
+#componentWrapper .info_holder{
+	position:absolute;
+	top:50px;
+	right:10px;
+	
+	color:#e5e5e5;
+	padding: 10px 20px;
+	
+	background-color: rgb(0, 0, 0);
+	background-color: rgba(0, 0, 0, 0.6);
+				
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	border-radius: 20px;
+
+	display:none;
+}
+
+#componentWrapper .info_holder a{
+	color:#e5e5e5;
+	text-decoration:underline;
+}
+
+#componentWrapper .info_holder a:hover, a:active{
+	text-decoration:underline;
+}
+
+/* playlist toggle */
+#componentWrapper .playlist_toggle{
+	position:absolute;
+	width:30px;
+	height:30px;
+	display:none;
+}
+
+/* menu. You can change font color, font-family or font-size here. */
+#componentWrapper .menu_item{
+	position:absolute;
+	/*background:#9a6;*/
+	color:#fff;
+	font-size:20;
+}
+
+/* preloader */
+#componentWrapper .componentPreloader{
+	display:none;
+	position:absolute;
+	top:50%;
+	left:50%;
+	margin:-25px 0px 0px -25px;
+	background:#fff url('../images/common/ajax-loader.gif') no-repeat center center;
+	width:50px;
+	height:50px;
+	z-index:999;
+	opacity:0.7;
+}
+
+/* font calculations */
+#componentWrapper .fontMeasure{
+	visibility:hidden;
+}

@@ -1,0 +1,140 @@
+<krpano onstart="buildthumbs(); loadscene(liv); addbuttons(); ">
+
+<include url="%CURRENTXML%/thumbsxml/thumbsbase.xml" />
+
+<thumbnails name="thumbs1" 
+	vertical="false"
+	edge="top" align="top" y="50"
+	thumb_width="90"
+	thumb_height="72"
+	thumb_margin="12"
+	frame_width="106"
+	frame_height="88"
+	skin_url="%CURRENTXML%/thumbsxml/skin/"
+	scroll_speed="0.5"
+	folow_mouse="true"
+>
+	<thumb name="tn1" url="liv_thumb.jpg" onclick="gotoscene(liv);" onhover="showtext(Livingroom);" />
+	<thumb name="tn2" url="kit_thumb.jpg" onclick="gotoscene(kit);" onhover="showtext(Kitchen);" />
+	<thumb name="tn3" url="cor_thumb.jpg" onclick="gotoscene(cor);" onhover="showtext(Corridor);" />	
+	<thumb name="tn4" url="bed_thumb.jpg" onclick="gotoscene(bed);" onhover="showtext(Bedroom);" />
+	<thumb name="tn5" url="bath_thumb.jpg" onclick="gotoscene(bath);" onhover="showtext(Bathroom);" />
+	<thumb name="tn6" url="fasad_thumb.jpg" onclick="gotoscene(fasad);" onhover="showtext(Streetview);" />
+</thumbnails>
+
+<action name="buildthumbs">
+	set(thumbnails[thumbs1].size, 350); <!-- set thumbsbar "thumbs1" height -->
+	thumbnails_build(thumbs1); <!-- build thumbsbar with name "thumbs1" -->
+</action>
+
+<scene name="liv" url="liv_thumb.jpg" onstart="thumbnails_visited(thumbs1,0,true);thumbnails_current(thumbs1,0);" >
+    <preview type="CUBESTRIP" url="panoramas/liv_preview.jpg" />
+    <view vlookat="0" hlookat="-100" fov="80.0" />
+</scene>
+
+<scene name="kit" onstart="thumbnails_visited(thumbs1,1, true);thumbnails_current(thumbs1,1);" >
+    <preview type="CUBESTRIP" url="panoramas/kit_preview.jpg" />
+    <view vlookat="0" hlookat="106" fov="80.0" />
+</scene>
+
+<scene name="cor" onstart="thumbnails_visited(thumbs1,2, true);thumbnails_current(thumbs1,2);" >
+    <preview type="CUBESTRIP" url="panoramas/cor_preview.jpg" />
+    <view vlookat="0" hlookat="106" fov="80.0" />
+</scene>	
+
+<scene name="bed" onstart="thumbnails_visited(thumbs1,3,true);thumbnails_current(thumbs1,3);" >
+    <preview type="CUBESTRIP" url="panoramas/bed_preview.jpg" />
+    <view vlookat="0" hlookat="-100" fov="80.0" />
+</scene>
+
+<scene name="bath" onstart="thumbnails_visited(thumbs1,4, true);thumbnails_current(thumbs1,4);" >
+    <preview type="CUBESTRIP" url="panoramas/bath_preview.jpg" />
+    <view vlookat="0" hlookat="106" fov="80.0" />
+</scene>
+
+<scene name="fasad" onstart="thumbnails_visited(thumbs1,5, true);thumbnails_current(thumbs1,5);" >
+    <preview type="CUBESTRIP" url="panoramas/fasad_preview.jpg" />
+    <view vlookat="0" hlookat="106" fov="80.0" />
+</scene>	
+	
+<action name="gotoscene"><!-- usage gotoscene(scenename,ath,atv,fov); -->
+	loadscene(%1, null, MERGE, BLEND(0.5));
+	if( %2 != 'null', set(view.hlookat,%2);,);
+	if( %3 != 'null', set(view.vlookat,%3);,);
+	if( %4 != 'null', set(view.fov,%4);,);
+</action>
+
+<action name="nextscene"><!-- to stop at last scene use nextscene(stopatlast);  -->
+	set(cursceneindex, get(scene[get(xml.scene)].index) );
+	set(scenecount, get(scene.count) ); add(scenecount, -1 );
+	if(cursceneindex LT scenecount,	add(cursceneindex,1); gotoscene(get(scene[get(cursceneindex)].name));, 
+		if( %1 != 'stopatlast', gotoscene( get(scene[0].name) ); );	);
+</action>
+
+<action name="prevscene"><!-- to stop at first scene use prevscene(stopatlast);  -->
+	set(cursceneindex, get(scene[get(xml.scene)].index));
+	set(scenecount, get(scene.count) );  add(scenecount, -1 );
+	if(cursceneindex GT 0, add(cursceneindex,-1); gotoscene( get(scene[get(cursceneindex)].name) );,
+		if( %1 != 'stopatlast', gotoscene( get(scene[get(scenecount)].name) ); ); );
+</action>
+
+
+<action name="addbuttons">
+	orangebutton(vert, Vert / Hor, bottom, 0, 100, 110, 46, ,switch(thumbnails[thumbs1].vertical,true,false);buildthumbs();, );
+	orangebutton(btnleft, ScrollToBegin, bottom, -190, 50, 110, 46, ,thumbnails_movebegin(thumbs1);, thumbnails_movestop(thumbs1);, );
+	orangebutton(btnright, ScrollToEnd, bottom, 190, 50, 110, 46, ,thumbnails_moveend(thumbs1);, thumbnails_movestop(thumbs1);, );
+	orangebutton(next, Next scene, bottom, 60, 50, 110, 46, nextscene();, , , );
+	orangebutton(prev, Prev scene, bottom, -60, 50, 110, 46, prevscene();, , , );
+</action>
+
+<action name="orangebutton"><!-- usage orangebutton(name,  title, align*, x, y, width, height, action, keep*); keep true by default, align righttop -->
+	set(buttonbgname,'');
+	txtadd(buttonbgname,%1,'_buttonbg');
+	addplugin(get(buttonbgname));  
+	set(plugin[get(buttonbgname)].url,%CURRENTXML%/button.png);
+	set(plugin[get(buttonbgname)].scale, 1); set(plugin[%1].alpha, 1);
+	set(plugin[get(buttonbgname)].scalechildren, true);
+	if(%11 != 'null', set(plugin[get(buttonbgname)].keep, %11);, set(plugin[get(buttonbgname)].keep, true); );
+	set(plugin[get(buttonbgname)].edge,center);
+	if(%3 != 'null', set(plugin[get(buttonbgname)].align,%3);, set(plugin[get(buttonbgname)].align,righttop); );
+	set(plugin[get(buttonbgname)].x,%4);
+	set(plugin[get(buttonbgname)].y,%5);
+	set(plugin[get(buttonbgname)].zorder,100);
+	set(plugin[get(buttonbgname)].visible, true); 
+	txtadd(plugin[get(buttonbgname)].ondown, 'add(plugin[', get(buttonbgname) ,'].scale,-0.02);', %9 ); 
+	txtadd(plugin[get(buttonbgname)].onup, 'add(plugin[', get(buttonbgname) ,'].scale,0.02);', %10 ); 
+	set(plugin[get(buttonbgname)].onclick, %8 );
+
+	addplugin(%1);  
+	set(plugin[%1].parent,get(buttonbgname));
+	set(plugin[%1].url,%CURRENTXML%/textfield.swf);
+	set(plugin[%1].scale, 1); set(plugin[%1].alpha, 1);
+	set(plugin[%1].keep, true); 
+	set(plugin[%1].align,lefttop);
+	set(plugin[%1].edge,lefttop);
+	set(plugin[%1].x,0);
+	set(plugin[%1].y,5);
+	set(plugin[%1].zorder,100);
+	set(plugin[%1].width, %6);
+	set(plugin[%1].height, 22);
+	set(plugin[%1].visible, true); 
+	set(plugin[%1].enabled, false); 
+	set(plugin[%1].capture, false); 
+	set(plugin[%1].handcursor, true); 
+	set(plugin[%1].selectable, false); 
+	set(plugin[%1].roundedge, 6); 
+	set(plugin[%1].glow, 0);	
+	set(plugin[%1].glowcolor, 0xFFFFFF);	
+	set(plugin[%1].shadow,1);
+	set(plugin[%1].background, false);
+	set(plugin[%1].border,false);	
+	set(plugin[%1].shadow,0);	
+	set(plugin[%1].textshadow, 1);		
+	set(plugin[%1].textglowcolor, 0x666666);	
+	set(plugin[%1].textglow, 0);	
+	set(plugin[%1].css, p{color:#FFFFFF;font-family:Arial;font-weight:normal;font-size:12;margin-left:5;margin-right:5;text-align:center;}	);	
+	set(plugin[%1].html, [p]%2[/p] );
+</action>	
+	
+</krpano>
+

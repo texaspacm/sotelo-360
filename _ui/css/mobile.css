@@ -1,0 +1,184 @@
+
+
+/* 4. MOBILE
+--------------------------------------------------------------------------------
+==============================================================================*/
+
+@media screen and (max-width: 1200px) {
+	.green-features {
+		font-size: 1em;
+	}
+	
+	.green-features p {
+		max-width: 420px;
+	}
+	
+	.cols-3 h3,
+	.cols-3 ul,
+	.cols-3 p {
+		margin-left: 30px;
+	}
+}
+
+@media screen and (max-height: 1024px) {
+	
+	html, body {
+		min-height: 643px;
+	}
+	
+	.title-bar {
+		height: 37px;
+	}
+	
+	.title-bar h1,
+	.title-bar .call {
+		padding-top: 6px;
+		padding-bottom: 6px;
+		font-size: 1.7em;
+	}
+	
+	.favorites {
+		padding-top: 7px;
+	}
+	
+	.main {
+		top: 122px;
+	}
+	
+	.office-info .location {
+		height: 83px;
+	}
+	
+	.office-info .adr {
+		margin-bottom: 14px;
+	}
+	
+	.office-info li {
+		margin: 0;
+	}
+	
+	.sidebar-nav {
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+	
+	.sidebar-text {
+		top: 357px;
+	}
+	
+	.main {
+		bottom: 34px;
+	}
+	
+	.content-pane.scrollable .scrollable-content {
+		padding: 15px 30px;
+	}
+	
+	.footer {
+		height: 33px;
+	}
+	
+	.legal,
+	.quick-links {
+		margin-top: 5px;
+	}
+	
+	.carousel-tabs {
+		position: absolute;
+		top: 22px;
+		right: 30px;
+		margin: 0;
+	}
+	
+	.carousel-wrapper {
+		margin-top: -12px;
+	}
+
+	.carousel,
+	.carousel-prev,
+	.carousel-next {
+		height: 414px;
+	}
+	
+	.floorplan h3 {
+		padding-left: 5%;
+		padding-right: 130px;
+		margin-top: 0;
+		margin-bottom: 7px;
+		text-align: left;
+	}
+	
+	.floorplan .info {
+		padding: 7px 130px 7px 5%;
+		text-align: left;
+		background: transparent;
+	}
+	
+	.floorplan .info div {
+		float: left;
+		margin: 0 0 0 4px;
+		padding: 0 0 0 4px;
+		border-left: 1px solid #BFBFBF;
+	}
+	
+	.floorplan .info div:first-child {
+		margin-left: 0;
+		padding-left: 0;
+		border-left: 0;
+	}
+	
+	.floorplan .plans {
+		border-top: 1px solid #BFBFBF;
+		padding-top: 15px;
+		margin-bottom: 0;
+	}
+	
+	.floorplan .inner-tabs {
+		position: absolute;
+		z-index: 1;
+		margin: 0;
+		top: -1px;
+		right: 5%;
+		border: 1px solid #BFBFBF;
+	}
+	
+	.floorplan .inner-tabs li {
+		display: block;
+		float: left;
+		padding: 0;
+		border-color: #BFBFBF;
+	}
+	
+	.floorplan .inner-tabs a,
+	.floorplan .inner-tabs a:visited {
+		display: block;
+		padding: 3px 5px;
+		border: 2px solid #fff;
+	}
+	
+	.floorplan .inner-tabs .current,
+	.floorplan .inner-tabs .current:visited {
+		background: #036;
+		color: #fff;
+	}
+	
+	.floorplan .button {
+		position: absolute;
+		display: block;
+		top: 0;
+		right: 5%;
+		padding: 4px 20px 8px;
+		width: 80px;
+	}
+	
+	.floorplan .button small {
+		display: none;
+	}
+	
+	.floorplan .button strong span {
+		display: block;
+		font-size: 7px;
+		text-transform: lowercase;
+	}
+	
+} 

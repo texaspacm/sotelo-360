@@ -1,0 +1,126 @@
+
+/* 3.4 Features & Amenities
+------------------------------------------------------------------------------*/
+
+.cols-3:after {
+	content: ".";
+	display: block;
+	visibility: hidden;
+	clear: both;
+	height: 0;
+}
+
+.ie7 .cols-3 {
+	zoom: 1;
+}
+
+.cols-3 .col {
+	float: left;
+	width: 33%;
+}
+
+.cols-3 h3,
+.cols-3 ul,
+.cols-3 p {
+	margin-left: 60px;
+	max-width: 300px;
+}
+
+.content-pane .residence,
+.content-pane .community,
+.content-pane .pets {
+	padding-left: 30px;
+	background: url(../images/common/icons.png) -9999em -9999em no-repeat;
+}
+
+.content-pane .residence {
+	background-position: -18px -496px;
+}
+
+.content-pane .community {
+	background-position: -18px -976px;
+}
+
+.content-pane .pets {
+	background-position: -18px -196px;
+}
+
+.features-list li {
+	margin-bottom: 7px;
+	float: left;
+	width: 100%;
+}
+
+.features-list span {
+	display: block;
+	padding-left: 30px;
+}
+
+.features-list a,
+.features-list a:visited {
+	display: block;
+	float: left;
+	padding-left: 30px;
+	background: url(../images/common/icons.png) -18px -564px no-repeat;
+	color: #3e3e3e;
+}
+
+.features-list a:focus,
+.features-list a:hover,
+.features-list a:active {
+	text-decoration: none;
+	font-weight: bold;
+	background-position: -18px -1824px;
+	color: #036;
+}
+
+.green-features {
+	border: 6px solid #dedddd;
+	height: 163px;
+	overflow: hidden;
+	font-size: 1.167em;
+	font-weight: bold;
+	line-height: 1.5em;
+	text-align: center;
+	background: #fff url(../images/features/bg_green-features.png) 0 bottom repeat-x;
+	color: #365713;
+}
+
+.green-features p {
+	margin: 28px auto 0;
+	max-width: 560px;
+}
+
+.green-features p:first-child {
+	margin-top: 14px;
+}
+
+.green-features-logo {
+	float: left;
+	margin: 7px 0 0 30px;
+}
+
+.green-features-text {
+	margin-left: 320px;
+}
+
+/* Photo tooltips */
+.feature-tip {
+	position: absolute;
+	display: none;
+	padding: 6px;
+	min-width: 32px;
+	min-height: 32px;
+	border: 1px solid #e4e4e4;
+	background: #fff url(../images/common/ajax-loader.gif) center center no-repeat;
+}
+
+.feature-tip img {
+	display: block;
+}
+
+.feature-tip .error {
+	width: 32px;
+	height: 32px;
+	background: #fff url(../images/common/error.png) center center no-repeat;
+}

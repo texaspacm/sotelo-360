@@ -1,0 +1,490 @@
+<!--
+
+<thumbnails name="NAME" 
+	vertical="false"
+	size="750" 
+	edge="lefttop" 
+	align="lefttop" 
+	y="1" 
+	x="1" 
+	scale="1" 
+	alpha="1"
+	thumb_width="" 
+	thumb_height="" 
+	thumb_margin=""
+	frame_width="" 
+	frame_height=""
+	bar_position=""
+	bg_url="" 
+	bg_alpha=""
+	barbg_url="" 
+	barbg_alpha=""
+	skin_url="%CURRENTXML%/thumbsxml/skin/"
+	thumb_url="%CURRENTXML%/thumbs/"
+	folow_mouse="false"
+	wheel_speed="3" 
+	current_auto="true"
+	current_jump="true"
+	visited_auto="true"
+	scroll_speed="0.5"
+>
+	<thumb name="tn1" url="image1.jpg" onclick="" onhover="" onover="" onout="" ondown="" onup="" />
+	<thumb name="tn2" url="image2.jpg" onclick="" onhover="" onover="" onout="" ondown="" onup="" />
+	<thumb name="tn3" url="image3.jpg" onclick="" onhover="" onover="" onout="" ondown="" onup="" />
+</thumbnails>
+
+-->
+
+<krpano version="1.0.8">
+
+<action name="thumbnails_build"><!-- thumbnails build function -->
+	if(plugin[%1].loaded,, addplugin(%1); txtadd(plugin[%1].url,get(thumbnails[%1].skin_url),spacer.png); set(thumbnails[%1].ready,true); 
+		set(plugin[%1].edge,lefttop); set(plugin[%1].keep,true); );
+	thumbnails_params(%1);
+	
+	txtadd(thumbnails[%1].barname,%1,_bar);
+	if(plugin[get(thumbnails[%1].barname)].loaded,, addplugin(get(thumbnails[%1].barname)); txtadd(plugin[get(thumbnails[%1].barname)].url,get(thumbnails[%1].skin_url),spacer.png); );
+	set(plugin[get(thumbnails[%1].barname)].parent,%1);
+	set(plugin[get(thumbnails[%1].barname)].scalechildren,true);
+	set(plugin[get(thumbnails[%1].barname)].edge,lefttop);	set(plugin[get(thumbnails[%1].barname)].align,lefttop);	
+	set(plugin[get(thumbnails[%1].barname)].zorder,1); set(plugin[get(thumbnails[%1].barname)].keep,true);
+	
+	stoptween(plugin[get(thumbnails[%1].barname)].y); stoptween(plugin[get(thumbnails[%1].barname)].x);
+	thumbnails_barevents(%1);
+	
+	if(thumbnails[%1].vertical, 
+		set(thumbnails[%1].thumb_size,get(thumbnails[%1].thumb_height));
+	, 
+		set(thumbnails[%1].thumb_size,get(thumbnails[%1].thumb_width)); 
+	);
+	
+	mul(thumbnails[%1].bar_size, get(thumbnails[%1].thumb.count), get(thumbnails[%1].thumb_size) );
+	mul(tempvar, get(thumbnails[%1].thumb.count), get(thumbnails[%1].thumb_margin) );
+	
+	add(thumbnails[%1].bar_size, get(thumbnails[%1].bar_size), get(tempvar) );
+	add(thumbnails[%1].bar_size, get(thumbnails[%1].thumb_margin) );
+	sub(thumbnails[%1].bar_maxd, get(thumbnails[%1].bar_size), get(thumbnails[%1].size) );
+	mul(thumbnails[%1].bar_maxd,-1);
+	
+	txtadd(bgname,%1,_bg);	addplugin(get(bgname));
+	txtadd(plugin[get(bgname)].url,get(thumbnails[%1].skin_url),get(thumbnails[%1].bg_url));
+	set(plugin[get(bgname)].alpha,get(thumbnails[%1].bg_alpha));
+	set(plugin[get(bgname)].parent,%1);
+	copy(plugin[get(bgname)].width, thumbnails[%1].width );
+	copy(plugin[get(bgname)].height, thumbnails[%1].height );
+	set(plugin[get(bgname)].edge,lefttop);
+	set(plugin[get(bgname)].align,lefttop);
+	set(plugin[get(bgname)].zorder,-1);
+	set(plugin[get(bgname)].keep,true);		
+	
+    txtadd(maskname,%1,_mask); addplugin(get(maskname));
+    txtadd(plugin[get(maskname)].url,get(thumbnails[%1].skin_url),spacer.png);
+    set(plugin[get(maskname)].parent,%1);
+    copy(plugin[get(maskname)].width, thumbnails[%1].width );
+    copy(plugin[get(maskname)].height, thumbnails[%1].height );
+    set(plugin[get(maskname)].edge,lefttop);
+    set(plugin[get(maskname)].align,lefttop);
+    set(plugin[get(maskname)].zorder,0);
+    set(plugin[get(maskname)].keep,true);	
+    set(plugin[get(maskname)].maskchildren,true);	
+    set(plugin[get(thumbnails[%1].barname)].parent, get(maskname) );
+	
+	txtadd(barbgname,%1,_barbg);	addplugin(get(barbgname));
+	txtadd(plugin[get(barbgname)].url,get(thumbnails[%1].skin_url),get(thumbnails[%1].barbg_url));
+	set(plugin[get(barbgname)].alpha,get(thumbnails[%1].barbg_alpha));
+	set(plugin[get(barbgname)].parent,get(thumbnails[%1].barname));
+
+	if(thumbnails[%1].vertical, 
+		copy(plugin[get(barbgname)].width, thumbnails[%1].height );
+		copy(plugin[get(barbgname)].height, thumbnails[%1].bar_size );		
+	, 
+		copy(plugin[get(barbgname)].width, thumbnails[%1].bar_size );
+		copy(plugin[get(barbgname)].height, thumbnails[%1].width );		
+	);
+
+	set(plugin[get(barbgname)].edge,lefttop);
+	set(plugin[get(barbgname)].align,lefttop);
+	set(plugin[get(barbgname)].zorder,0);
+	set(plugin[get(barbgname)].keep,true);	
+	
+	if(thumbnails[%1].thumbnails_building,,thumbnails_addthumb(%1,0,0););
+</action>
+
+<action name="thumbnails_position">
+	set(thdx,0);set(thdy,0);
+
+	if(thumbnails[%1].edge == 'top', set(thdx,-0.5); );
+	if(thumbnails[%1].edge == 'righttop', set(thdx,-1); );
+	if(thumbnails[%1].edge == 'left', set(thdy,-0.5) );
+	if(thumbnails[%1].edge == 'center', set(thdx,-0.5);set(thdy,-0.5) );
+	if(thumbnails[%1].edge == 'right', set(thdx,-1);set(thdy,-0.5) );
+	if(thumbnails[%1].edge == 'leftbottom', set(thdy,-1) );
+	if(thumbnails[%1].edge == 'bottom', set(thdx,-0.5);set(thdy,-1) );
+	if(thumbnails[%1].edge == 'rightbottom', set(thdx,-1);set(thdy,-1) );
+	
+	set(tn_stage_dx,0); set(tn_align_dx,1);
+	set(tn_stage_dy,0); set(tn_align_dy,1);
+
+	if(thumbnails[%1].align == 'top', set(tn_stage_dx,0.5); );
+	if(thumbnails[%1].align == 'left', set(tn_stage_dy,0.5); );
+	if(thumbnails[%1].align == 'center', set(tn_stage_dx,0.5); set(tn_stage_dy,0.5); );
+	if(thumbnails[%1].align == 'righttop', mul(thdx,-1); set(tn_stage_dx,1); set(tn_align_dx,-1); );
+	if(thumbnails[%1].align == 'right', mul(thdx,-1); set(tn_stage_dx,1); set(tn_align_dx,-1); set(tn_stage_dy,0.5);  );
+	if(thumbnails[%1].align == 'leftbottom', mul(thdy,-1); set(tn_stage_dy,1); set(tn_align_dy,-1); );
+	if(thumbnails[%1].align == 'bottom', mul(thdy,-1); set(tn_stage_dx,0.5); set(tn_stage_dy,1); set(tn_align_dy,-1); );
+	if(thumbnails[%1].align == 'rightbottom', mul(thdx,-1);mul(thdy,-1); set(tn_stage_dx,1); set(tn_align_dx,-1); set(tn_stage_dy,1); set(tn_align_dy,-1); );
+	
+	mul(thdx,thumbnails[%1].width,get(thdx));
+	add(plugin[%1].x,get(thumbnails[%1].x),get(thdx));
+	
+	mul(thdy,thumbnails[%1].height,get(thdy)); 
+	add(plugin[%1].y,get(thumbnails[%1].y),get(thdy));
+
+	if(thumbnails[%1].vertical, 
+		set(stagesize,get(stageheight));
+		mul(plugin[%1].abspos,get(stagesize),get(tn_stage_dy));
+		mul(tn_align_dy,get(plugin[%1].y),get(tn_align_dy));
+		add(plugin[%1].abspos, get(tn_align_dy)); 
+	,
+		set(stagesize,get(stagewidth));
+		mul(plugin[%1].abspos,get(stagesize),get(tn_stage_dx));
+		mul(tn_align_dx,get(plugin[%1].x),get(tn_align_dx));
+		add(plugin[%1].abspos, get(tn_align_dx)); 
+	);
+
+</action>
+
+<action name="thumbnails_params">
+	set(plugin[%1].scalechildren,true);
+	if(thumbnails[%1].vertical === null, set(thumbnails[%1].vertical,false ); );
+	if(thumbnails[%1].size === null, if(thumbnails[%1].vertical, set(thumbnails[%1].size,get(stageheight));, set(thumbnails[%1].size,get(stagewidth)); ); );
+	if(thumbnails[%1].x === null, set(thumbnails[%1].x,0); );
+	if(thumbnails[%1].y === null, set(thumbnails[%1].y,0); );
+	if(thumbnails[%1].edge === null, set(thumbnails[%1].edge,lefttop); set(plugin[%1].align,lefttop); );
+	if(thumbnails[%1].align === null, copy(thumbnails[%1].align,lefttop); set(plugin[%1].align,lefttop);, copy(plugin[%1].align,thumbnails[%1].align); );	
+	if(thumbnails[%1].scale === null, set(thumbnails[%1].scale,1);, copy(plugin[%1].scale,thumbnails[%1].scale); );
+	if(thumbnails[%1].alpha === null, set(thumbnails[%1].alpha,1);, copy(plugin[%1].alpha,thumbnails[%1].alpha); );		
+	if(thumbnails[%1].thumb_width === null, set(thumbnails[%1].thumb_width,100); );
+	if(thumbnails[%1].thumb_height === null, set(thumbnails[%1].thumb_height,65); );	
+	if(thumbnails[%1].thumb_margin === null, set(thumbnails[%1].thumb_margin,5); );	
+	if(thumbnails[%1].frame_width === null, copy(thumbnails[%1].frame_width,thumbnails[%1].thumb_width); );
+	if(thumbnails[%1].frame_height === null, copy(thumbnails[%1].frame_height,thumbnails[%1].thumb_height); );	
+	if(thumbnails[%1].bar_position === null, set(thumbnails[%1].bar_position,0); );
+	if(thumbnails[%1].bg_url === null, set(thumbnails[%1].bg_url,spacer.png); );	
+	if(thumbnails[%1].bg_alpha === null, set(thumbnails[%1].bg_alpha,1); );
+	if(thumbnails[%1].barbg_url === null, set(thumbnails[%1].barbg_url,spacer.png); );	
+	if(thumbnails[%1].barbg_alpha === null, set(thumbnails[%1].barbg_alpha,1); );	
+	if(thumbnails[%1].skin_url === null, set(thumbnails[%1].skin_url,%CURRENTXML%/thumbsxml/skin/); );	
+	if(thumbnails[%1].thumb_url === null, set(thumbnails[%1].thumb_url,%CURRENTXML%/thumbs/); );	
+	if(thumbnails[%1].wheel_speed === null, set(thumbnails[%1].wheel_speed,3); );	
+	if(thumbnails[%1].current_jump === null, set(thumbnails[%1].current_jump,true); );	
+	if(thumbnails[%1].current_auto === null, set(thumbnails[%1].current_auto,true); );	
+	if(thumbnails[%1].visited_auto === null, set(thumbnails[%1].visited_auto,true); );	
+	if(thumbnails[%1].scroll_speed === null, set(thumbnails[%1].scroll_speed,1); );	
+	if(thumbnails[%1].folow_mouse === null, set(thumbnails[%1].folow_mouse,false); );	
+	
+	add(thumbnails[%1].sizew, get(thumbnails[%1].thumb_width), get(thumbnails[%1].thumb_margin) );
+	add(thumbnails[%1].sizew, get(thumbnails[%1].thumb_margin) );
+	
+	add(thumbnails[%1].sizeh, get(thumbnails[%1].thumb_height), get(thumbnails[%1].thumb_margin) );
+	add(thumbnails[%1].sizeh, get(thumbnails[%1].thumb_margin) );
+	
+	if(thumbnails[%1].vertical, 
+		set(thumbnails[%1].width, get(thumbnails[%1].sizew) );	set(thumbnails[%1].height, get(thumbnails[%1].size) );
+	,
+		set(thumbnails[%1].width, get(thumbnails[%1].size) );	set(thumbnails[%1].height, get(thumbnails[%1].sizeh) );
+	);
+	
+	thumbnails_position(%1);
+</action>
+
+<action name="thumbnails_addthumb">
+	set(thumbnails[%1].thumbnails_building,true);
+	set(thumbnails[%1].counter,%2);	set(thumbnails[%1].fixoverflow,%3);
+	if(thumbnails[%1].thumb.count GT 0,
+		txtadd(thumbname,%1,_thumb_,get(thumbnails[%1].counter)); 
+		txtadd(framename,%1,_frame_,get(thumbnails[%1].counter));		
+		if(plugin[get(thumbname)].loaded,,
+			addplugin(get(thumbname)); addplugin(get(framename));
+			set(plugin[get(thumbname)].keep,true); set(plugin[get(framename)].keep,true);
+			set(plugin[get(thumbname)].visible,false); set(plugin[get(framename)].visible,false);
+			txtadd(plugin[get(thumbname)].url,get(thumbnails[%1].thumb_url), get(thumbnails[%1].thumb[get(thumbnails[%1].counter)].url) ); 
+			txtadd(plugin[get(framename)].url,get(thumbnails[%1].skin_url), thumbstates.png );
+			
+			txtadd(plugin[get(framename)].onloaded,'','thumbnails_framecropconf(',%1,',',get(thumbname),',',get(framename),');');
+			txtadd(plugin[get(framename)].altonloaded,'','thumbnails_framecropconfJS(',%1,',',get(thumbname),',',get(framename),');');
+			
+		);
+		txtadd(plugin[get(thumbname)].parent,%1,_bar); txtadd(plugin[get(framename)].parent,%1,_bar);
+		set(plugin[get(thumbname)].edge,lefttop); set(plugin[get(thumbname)].align,lefttop);
+		set(plugin[get(framename)].edge,lefttop); set(plugin[get(framename)].align,lefttop);
+		copy(plugin[get(thumbname)].width,thumbnails[%1].thumb_width); copy(plugin[get(thumbname)].height,thumbnails[%1].thumb_height);
+		if(plugin[get(framename)].loaded, 
+			copy(plugin[get(framename)].width,thumbnails[%1].frame_width); copy(plugin[get(framename)].height,thumbnails[%1].frame_height);
+			thumbnails_thumbstate(%1,get(framename),normal); 
+		);
+
+		if(thumbnails[%1].vertical,
+			add(tempvar,get(thumbnails[%1].thumb_height),get(thumbnails[%1].thumb_margin));
+			mul(tempvar,get(tempvar),get(thumbnails[%1].counter));	
+			add(tempvar,get(thumbnails[%1].thumb_margin));
+			copy(plugin[get(thumbname)].y,tempvar);	copy(plugin[get(thumbname)].x,thumbnails[%1].thumb_margin);
+			
+			sub(tempvar,get(thumbnails[%1].frame_height),get(thumbnails[%1].thumb_height)); 
+			div(tempvar,2); sub(tempvar,get(plugin[get(thumbname)].y),get(tempvar)); 
+			copy(plugin[get(framename)].y,tempvar); 
+			
+			sub(tempvar,get(thumbnails[%1].frame_width),get(thumbnails[%1].thumb_width)); 
+			div(tempvar,2); sub(tempvar,get(plugin[get(thumbname)].x),get(tempvar)); 
+			copy(plugin[get(framename)].x,tempvar);
+		,	
+			add(tempvar,get(thumbnails[%1].thumb_width),get(thumbnails[%1].thumb_margin));
+			mul(tempvar,get(tempvar),get(thumbnails[%1].counter));	
+			add(tempvar,get(thumbnails[%1].thumb_margin));
+			copy(plugin[get(thumbname)].x,tempvar);	copy(plugin[get(thumbname)].y,thumbnails[%1].thumb_margin);
+			
+			sub(tempvar,get(thumbnails[%1].frame_width),get(thumbnails[%1].thumb_width)); 
+			div(tempvar,2); sub(tempvar,get(plugin[get(thumbname)].x),get(tempvar)); 
+			copy(plugin[get(framename)].x,tempvar); 
+			
+			sub(tempvar,get(thumbnails[%1].frame_height),get(thumbnails[%1].thumb_height)); 
+			div(tempvar,2); sub(tempvar,get(plugin[get(thumbname)].y),get(tempvar)); 
+			copy(plugin[get(framename)].y,tempvar);
+		);
+		
+		set(plugin[get(thumbname)].zorder,1); set(plugin[get(framename)].zorder,2);
+		
+		set(plugin[get(framename)].counter,get(thumbnails[%1].counter));
+		thumbnails_setthumbevents(%1,get(framename),get(thumbnails[%1].counter));
+		
+	);
+	add(thumbnails[%1].counter,1); add(thumbnails[%1].fixoverflow,1);	
+	if(thumbnails[%1].counter LT thumbnails[%1].thumb.count, 
+		if(thumbnails[%1].fixoverflow LT 10, thumbnails_addthumb(%1,get(thumbnails[%1].counter),get(thumbnails[%1].fixoverflow));
+		, delayedcall(0, set(thumbnails[%1].fixoverflow,0); thumbnails_addthumb(%1,get(thumbnails[%1].counter),get(thumbnails[%1].fixoverflow)); );	);
+	,
+		set(thumbnails[%1].thumbnails_building,false);
+		thumbnails_moveat(%1,get(thumbnails[%1].bar_position));
+	);
+</action>
+
+<action name="thumbnails_setthumbevents">
+	txtadd(plugin[%2].onclick,'','thumb_click(', %1, ',', %3, ');' );
+	if(thumbnails[%1].thumb[%3].onclick === null,,txtadd(plugin[%2].onclick, get(thumbnails[%1].thumb[%3].onclick) ); );
+	txtadd(plugin[%2].onhover,'','thumb_hover(', %1, ',', %3, ');' );
+	if(thumbnails[%1].thumb[%3].onhover === null,, txtadd(plugin[%2].onhover, get(thumbnails[%1].thumb[%3].onhover) ); );
+	txtadd(plugin[%2].onover,'','thumb_over(', %1, ',', %3, ');' );
+	if(thumbnails[%1].thumb[%3].onover === null,, txtadd(plugin[%2].onover, get(thumbnails[%1].thumb[%3].onover) );	);
+	txtadd(plugin[%2].onout,'','thumb_out(', %1, ',', %3, ');' );
+	if(thumbnails[%1].thumb[%3].onout === null,, txtadd(plugin[%2].onout, get(thumbnails[%1].thumb[%3].onout) ); );
+	txtadd(plugin[%2].ondown,'','thumb_down(', %1, ',', %3, ');' );
+	if(thumbnails[%1].thumb[%3].ondown === null,, txtadd(plugin[%2].ondown, get(thumbnails[%1].thumb[%3].ondown) );	);
+	txtadd(plugin[%2].onup,'','thumb_up(', %1, ',', %3, ');' );
+	if(thumbnails[%1].thumb[%3].onup === null,, txtadd(plugin[%2].onup, get(thumbnails[%1].thumb[%3].onup) ); );
+</action>
+
+<action name="thumbnails_visited">
+	txtadd(thumbnails[%1].framename,%1,_frame_,%2);
+	if(%3, 
+		set(plugin[get(thumbnails[%1].framename)].visited,true);
+		set(thumbnails[%1].thumb[%2].visited,true);
+	, 
+		set(plugin[get(thumbnails[%1].framename)].visited,false);
+		set(thumbnails[%1].thumb[%2].visited,false);
+	);
+</action>
+
+<action name="thumbnails_current">
+	txtadd(thumbnails[%1].framename,%1,_frame_,%2);
+	if(thumbnails[%1].thumb_current === null, 
+		set(thumbnails[%1].thumb_current,get(thumbnails[%1].framename));
+	,
+		set(plugin[get(thumbnails[%1].thumb_current)].current,false); 
+		set(thumbnails[%1].thumb[get(plugin[get(thumbnails[%1].thumb_current)].counter)].current,false);
+		if(thumbnails[%1].frame_cropset, thumbnails_thumbstate(%1,get(thumbnails[%1].thumb_current),normal); );
+		if(thumbnails[%1].frame_cropset, set(thumbnails[%1].thumb_current,get(thumbnails[%1].framename)); );
+	);
+	set(plugin[get(thumbnails[%1].framename)].current,true);
+	set(thumbnails[%1].thumb[%2].current,true);
+	if(thumbnails[%1].frame_cropset, thumbnails_thumbstate(%1,get(thumbnails[%1].framename),current); );
+	if(thumbnails[%1].current_jump, thumbnails_jumpthumb(%1,%2););	
+</action>
+
+<action name="thumbnails_jumpthumb">
+	if(thumbnails[%1].vertical, set(thumbnails[%1].subsize,get(thumbnails[%1].thumb_height));, set(thumbnails[%1].subsize,get(thumbnails[%1].thumb_width)); );
+	if(thumbnails[%1].bar_size GT thumbnails[%1].size, 
+		add(thumbnails[%1].tempvar,get(thumbnails[%1].subsize),get(thumbnails[%1].thumb_margin));
+		add(thumbnails[%1].tempvar,get(thumbnails[%1].tempvar),get(thumbnails[%1].thumb_margin));
+		div(thumbnails[%1].barthumbscount,get(thumbnails[%1].size),get(thumbnails[%1].tempvar));
+
+		sub(thumbnails[%1].tempvar,get(thumbnails[%1].thumb.count),get(thumbnails[%1].barthumbscount)); div(thumbnails[%1].tempvar,%2,get(thumbnails[%1].tempvar));
+		if(thumbnails[%1].tempvar LT thumbnails[%1].bar_position, thumbnails_moveto(%1,get(thumbnails[%1].tempvar)); );
+
+		sub(thumbnails[%1].tempvar,get(thumbnails[%1].thumb.count),get(thumbnails[%1].barthumbscount));
+		sub(thumbnails[%1].tempvar2,%2,get(thumbnails[%1].barthumbscount));
+		add(thumbnails[%1].tempvar2,get(thumbnails[%1].tempvar2),1); div(thumbnails[%1].tempvar,get(thumbnails[%1].tempvar2),get(thumbnails[%1].tempvar));		
+		if(thumbnails[%1].tempvar GT thumbnails[%1].bar_position, thumbnails_moveto(%1,get(thumbnails[%1].tempvar)); );
+	);
+</action>
+
+<action name="thumb_click">
+	txtadd(thumbnails[%1].framename,%1,_frame_,%2);
+	if(thumbnails[%1].visited_auto, thumbnails_visited(%1,%2, true); thumbnails_thumbstate(%1,get(thumbnails[%1].framename),normal); );
+	if(thumbnails[%1].current_auto, thumbnails_current(%1,%2); thumbnails_thumbstate(%1,get(thumbnails[%1].framename),current); );
+</action>
+
+<action name="thumb_hover">
+	txtadd(thumbnails[%1].framename,%1,_frame_,%2);
+	
+</action>
+
+<action name="thumb_over">
+	txtadd(thumbnails[%1].framename,%1,_frame_,%2);
+	thumbnails_thumbstate(%1,get(thumbnails[%1].framename),hover);
+</action>
+
+<action name="thumb_out">
+	txtadd(thumbnails[%1].framename,%1,_frame_,%2);
+	thumbnails_thumbstate(%1,get(thumbnails[%1].framename),normal);
+</action>
+
+<action name="thumb_down">
+	txtadd(thumbnails[%1].framename,%1,_frame_,%2);
+	thumbnails_thumbstate(%1,get(thumbnails[%1].framename),down);
+</action>
+
+<action name="thumb_up">
+	txtadd(thumbnails[%1].framename,%1,_frame_,%2);
+	thumbnails_thumbstate(%1,get(thumbnails[%1].framename),hover);
+</action>
+
+<action name="thumbnails_framecropconf">
+	if(thumbnails[%1].frame_cropset,, 
+		plugin[%3].resetsize(); 
+		div(thumbnails[%1].frame_cropw,get(plugin[%3].width),2);
+		div(thumbnails[%1].frame_croph,get(plugin[%3].height),4);
+		set(thumbnails[%1].frame_cropset,true);
+	);
+	copy(plugin[%3].width,thumbnails[%1].frame_width); 
+	copy(plugin[%3].height,thumbnails[%1].frame_height);
+	thumbnails_thumbstate(%1,%3,normal); 
+	set(plugin[%3].visible,true); 
+	set(plugin[%2].visible,true); 
+</action>
+
+<action name="thumbnails_framecropconfJS">
+	if(thumbnails[%1].frame_cropset, thumbnails_thumbstate(%1,%3,normal);, getsizeJSfix(%1,%3);	);
+	copy(plugin[%3].width,thumbnails[%1].frame_width); 
+	copy(plugin[%3].height,thumbnails[%1].frame_height);
+	set(plugin[%3].visible,true);
+	set(plugin[%2].visible,true); 
+</action>
+<action name="getsizeJSfix">
+	txtadd(sizeJSfix,'',get(plugin[%2].width));		
+	if(sizeJSfix == 'NaN', delayedcall(0.1, if(thumbnails[%1].frame_cropset,,getsizeJSfix(%1,%2); ); );	,	
+		div(thumbnails[%1].frame_cropw,get(plugin[%2].width),2);
+		div(thumbnails[%1].frame_croph,get(plugin[%2].height),4);
+		thumbnails_thumbstate(%1,%2,normal);
+		set(thumbnails[%1].frame_cropset,true);
+	);		
+</action>
+
+<action name="thumbnails_thumbstate">	
+	if(%3 == 'normal', if(plugin[%2].current, set(croph,2);, set(croph,0); ); ); 
+	if(%3 == 'hover', set(croph,1); ); 
+	if(%3 == 'current', set(croph,2); ); if(%3 == 'down', set(croph,3); );
+	mul(croph,get(croph),get(thumbnails[%1].frame_croph));
+	if(plugin[%2].visited, set(cropw,get(thumbnails[%1].frame_cropw));, set(cropw,0); );
+	txtadd(plugin[%2].crop,'',get(cropw), '|', get(croph), '|', get(thumbnails[%1].frame_cropw) ,'|', get(thumbnails[%1].frame_croph) );
+</action>
+
+<action name="thumbnails_moveat">
+	set(thumbnails[%1].movepos,%2); if(%2 LT 0, set(thumbnails[%1].movepos,0); ); if(%2 GT 1, set(thumbnails[%1].movepos,1); );
+	mul(tempvar, get(thumbnails[%1].bar_maxd), get(thumbnails[%1].movepos) );
+	if(tempvar GT 0, set(tempvar,0); );
+    
+	if(thumbnails[%1].vertical,	set(plugin[get(thumbnails[%1].barname)].y, get(tempvar) );	set(plugin[get(thumbnails[%1].barname)].x, 0);	
+	, set(plugin[get(thumbnails[%1].barname)].x, get(tempvar) ); set(plugin[get(thumbnails[%1].barname)].y, 0); ); 
+	
+	set(thumbnails[%1].bar_position, get(thumbnails[%1].movepos) );
+</action>
+
+<action name="thumbnails_move">
+	sub(thumbnails[%1].distancedelay,%3,get(%2));	
+	mul(thumbnails[%1].distancedelay,get(thumbnails[%1].distancedelay),get(thumbnails[%1].distancedelay));
+ 	pow(thumbnails[%1].distancedelay,get(thumbnails[%1].distancedelay),0.5); 
+	div(thumbnails[%1].distancedelay,get(thumbnails[%1].distancedelay),get(thumbnails[%1].bar_size));
+	mul(thumbnails[%1].distancedelay,get(thumbnails[%1].distancedelay),2); 
+	mul(thumbnails[%1].distancedelay,get(thumbnails[%1].scroll_speed),get(thumbnails[%1].distancedelay));
+	if(thumbnails[%1].bar_size GT thumbnails[%1].size, tween(%2, %3, get(thumbnails[%1].distancedelay), %4); );
+</action>
+
+<action name="thumbnails_moveto">
+	set(thumbnails[%1].movepos,%2); if(%2 LT 0, set(thumbnails[%1].movepos,0); ); if(%2 GT 1, set(thumbnails[%1].movepos,1); );
+	mul(tempvar, get(thumbnails[%1].bar_maxd), get(thumbnails[%1].movepos) );
+	
+	if(thumbnails[%1].vertical,	thumbnails_move(%1, plugin[get(thumbnails[%1].barname)].y, get(tempvar), linear);
+	, thumbnails_move(%1, plugin[get(thumbnails[%1].barname)].x, get(tempvar), linear);	);
+	
+	set(thumbnails[%1].bar_position, get(thumbnails[%1].movepos) );
+</action>
+
+<action name="thumbnails_moveend">
+	if(thumbnails[%1].vertical,	thumbnails_move(%1, plugin[get(thumbnails[%1].barname)].y, get(thumbnails[%1].bar_maxd), linear);
+	, thumbnails_move(%1, plugin[get(thumbnails[%1].barname)].x, get(thumbnails[%1].bar_maxd), linear); );
+</action>
+
+<action name="thumbnails_movebegin">
+	if(thumbnails[%1].vertical,	thumbnails_move(%1, plugin[get(thumbnails[%1].barname)].y, 0, linear);
+	, thumbnails_move(%1, plugin[get(thumbnails[%1].barname)].x, 0, linear); );
+</action>
+
+<action name="thumbnails_movestop">
+	stoptween(plugin[get(thumbnails[%1].barname)].y);stoptween(plugin[get(thumbnails[%1].barname)].x);
+	if(thumbnails[%1].vertical,	div(thumbnails[%1].bar_position, get(plugin[get(thumbnails[%1].barname)].y), get(thumbnails[%1].bar_maxd) );
+	, div(thumbnails[%1].bar_position, get(plugin[get(thumbnails[%1].barname)].x), get(thumbnails[%1].bar_maxd) ); );	
+</action>
+
+<action name="thumbnails_mousewheel">
+	freezeview(true); 
+	add(tempvar,get(thumbnails[%1].thumb_height),get(thumbnails[%1].thumb_margin));
+	div(tempvar,get(tempvar),get(thumbnails[%1].bar_maxd));
+	div(speed,get(thumbnails[%1].wheel_speed),3);
+	mul(tempvar,get(tempvar),get(speed));
+	mul(plusminus,get(wheeldelta),get(wheeldelta)); 
+	pow(plusminus,get(plusminus),0.5);	
+	div(plusminus,get(wheeldelta),get(plusminus));
+	mul(tempvar,get(tempvar),get(plusminus));
+	add(tempvar,get(thumbnails[%1].bar_position),get(tempvar));
+	if(tempvar LT 0, set(tempvar,0);, if(tempvar GT 1, set(tempvar,1); ); );
+	thumbnails_moveto(%1,get(tempvar),slow);
+	delayedcall(0.001, freezeview(false););
+</action>
+
+<action name="thumbnails_baronout">
+	set(thumbnails[%1].folow_mouse_state,false); 
+	set(events.onmousewheel,null);
+</action>
+
+
+<action name="thumbnails_barevents">
+	set(plugin[%1].onover, set(events.onmousewheel,thumbnails_mousewheel(%1); ); );
+	set(plugin[%1].onout, thumbnails_baronout(%1); );
+	if(thumbnails[%1].folow_mouse, 
+		txtadd(plugin[%1].onover, 'set(thumbnails[', %1, '].folow_mouse_state,true);thumbnails_position(%1);thumbnails_mousefolow(', %1, ');' );	
+	);
+</action>
+
+<action name="thumbnails_mousefolow">
+	if(thumbnails[%1].vertical, set(folowpos,get(mouse.stagey));, set(folowpos,get(mouse.stagex)); );
+	sub(thumbnails[%1].folow_mouse_d, get(folowpos), get(plugin[%1].abspos) ); 
+	mul(tempvar,get(thumbnails[%1].size), 0.15 );	
+	sub(thumbnails[%1].folow_mouse_d, get(tempvar) );
+	mul(tempvar,get(thumbnails[%1].size), 0.7 );
+	div(thumbnails[%1].folow_mouse_d,get(thumbnails[%1].folow_mouse_d),get(tempvar) );
+	if(thumbnails[%1].folow_mouse_d GT 1, set(thumbnails[%1].folow_mouse_d,1) );
+	if(thumbnails[%1].folow_mouse_d LT 0, set(thumbnails[%1].folow_mouse_d,0) );
+	if(thumbnails[%1].folow_mouse_state, thumbnails_moveto(%1,get(thumbnails[%1].folow_mouse_d)); delayedcall(0.01, thumbnails_mousefolow(%1); ); );
+</action>
+
+</krpano>
